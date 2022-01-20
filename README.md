@@ -9,3 +9,4 @@ The tool uses the following tools:
 - Social Engineering ToolKit
 - Medusa
 - Hydra
+And you can also use the basic commands for a pure shell in Linux.
