@@ -1,11 +1,10 @@
 # imports
-from posixpath import split
 import random
 import socket
 import compileall
 import os
-import sys
 import requests
+from posixpath import split
 from time import sleep
 
 # tools functions
@@ -33,7 +32,7 @@ def banner1 (): # banner 1
     sleep(0.125)
     print (" %s[%sXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX%s]"%(green,red,green))
     sleep(0.125)
-    print (" %s[%sX%s https://mostafaalgorithm.000webhostapp.com %sX%s]"%(green,red,blue,red,green))
+    print (" %s[%sXXXXXXXXX%s https://www.algorithm.host %sXXXXXXXXX%s]"%(green,red,blue,red,green))
     sleep(0.125)
     print (" %s[%sXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX%s]"%(green,red,green))
     sleep(0.125)
@@ -86,7 +85,7 @@ def banner2(): # banner 2
     sleep(0.125)
     print ("     %sXXXXXXXXXXXXXXXXXXXXXX%s+...+%sXXXXXXXXXXXXXXXXXXXXXX     "%(red,blue,red))
     sleep(0.125)
-    print (blue + "         http://mostafaalgorithm.000webhostapp.com            ")
+    print (blue + "                 https://www.algorithm.host                   ")
     sleep(0.125)
     print(" ")
 
@@ -309,6 +308,7 @@ def menu(): # shell menu options
     payload               create metasploit payload
     msf                   run metasploit console
     set                   run social engineering tool kit
+    anonsurf              make vpn connection use anonsurf tool
 
     System control        Discription
     %s==============        ===========%s
@@ -316,11 +316,18 @@ def menu(): # shell menu options
     oport                 open port after closed
     update                update linux system
     cd                    to change direction folder
+    install               to install package
 
     %s|==> %sYou can use bash's commands
 
     %s|==> %sDevelopment by Mostafa Algorithm %s<==|
     """%(green,blue,green,blue,green,blue,green,blue,green,blue,red,blue))
+
+def xterm(command):
+    os.system("xterm -e \" " + command + ";echo Press Enter to contenue...;read x \" &")
+
+def xterm_hold(command):
+    os.system("xterm -hold -e \" " + command + ";echo Press Enter to contenue...;read x \"")
 
 def main(): # start shell
     pth = os.getcwd()
@@ -388,27 +395,30 @@ def main(): # start shell
         usr =  get(user_msg)
         pss = get("enter-passwords-list")
         line(1)
-        os.system("sudo hydra %s %s -P %s %s mysql"%(p,usr,pss,hst))
+        xterm("sudo hydra %s %s -P %s %s mysql"%(p,usr,pss,hst))
         line(1)
     elif read.lower() == "payload":
         payload()
     elif read.lower() == "msf":
         msf_open()
     elif read.lower() == "set":
-        os.system("sudo apt install setoolkit;clear;sudo setoolkit;clear")
-        banner_change()
+        xterm("sudo apt install setoolkit;clear;sudo setoolkit")
+    elif read.lower() == "anonsurf":
+        mode = get("Start or Stop")
+        if mode.lower() == "start" or mode.lower() == "stop":
+            xterm("anonsurf " + mode.lower())
+        else:
+            show("Mode not found...!")
     elif read.lower() == "kport":
         port = get("enter-port")
-        os.system("sudo iptables -A INPUT -p tcp --dport " + port + " -j DROP")
+        xterm_hold("sudo iptables -A INPUT -p tcp --dport " + port + " -j DROP")
     elif read.lower() == "oport":
-        os.system("sudo iptables -F")
+        xterm_hold("sudo iptables -F")
     elif read.lower() == "update":
-        print("")
-        os.system("sudo apt update;sudo apt full-upgrade -y")
+        xterm("sudo apt update;sudo apt full-upgrade -y")
     elif read.lower() == "cd":
         newPath = get("enter-new-path")
-        #print (newPath.split().length())
-        if newPath.split()[0] == "/":
+        if newPath.startswith("/"):
             pth = newPath
         else:
             pth += "/" + newPath
@@ -416,6 +426,13 @@ def main(): # start shell
             os.chdir(pth)
         except OSError:
             show("Direction not found...! *_*")
+    elif read.lower() == "install":
+        package = get("enter-package-name")
+        if package.endswith(".pkg"):
+            command = "sudo dpkg -i " + package
+        else:
+            command = "sudo apt install " + package
+        xterm(command)
     elif read.lower() == "":
         sleep(0.125)
     else:
